@@ -1,5 +1,6 @@
 import React,{useState} from 'react';
 import {View,Text,Image,TextInput,TouchableOpacity} from 'react-native'
+import { PopUp } from '../components/PopUp';
 import LogoFull from '../img/logoFull.jpg';
 import {styles} from '../styles/CreateAccount'
 
@@ -11,6 +12,7 @@ export function CreateAccount(props:any){
     const [empty,setEmpty] = useState<boolean>(false)
     const [placeholderColor,setPlaceholderColor] = useState<string>('#979797')
     const [border,setBorder] = useState<object>({})
+    const [showPopUp,setShowPopUp] = useState<boolean>(false)
 
     function changeColor(){
         setPlaceholderColor('red')
@@ -64,12 +66,13 @@ export function CreateAccount(props:any){
                         changeColor()
                         return
                     }
-                    props.navigation.navigate('HomePage')
+                    setShowPopUp(true)
                     
                 }}>
                     <Text style={styles.buttonText}>Cadastrar</Text>
                 </TouchableOpacity>
             </View>
+            {showPopUp && (<PopUp name={name} navigate={props.navigation.navigate}/>)}
         </View>
     )
 }
