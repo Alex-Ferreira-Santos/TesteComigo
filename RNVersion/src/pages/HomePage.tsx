@@ -2,6 +2,9 @@ import React,{useState} from 'react';
 import {View,Text,Image,TextInput,TouchableOpacity} from 'react-native'
 import {styles} from '../styles/HomePage'
 import Logo from '../img/logo.png'
+import Auth0 from 'react-native-auth0';
+
+const auth0 = new Auth0({ domain: 'devalex.us.auth0.com', clientId: '2J2E6ovI6po2PTrJ4O3Wov9GtClXseMf' });
 
 export function HomePage(props:any){
     const [Email,setEmail] = useState<string>('')
@@ -9,6 +12,7 @@ export function HomePage(props:any){
     const [placeholder,setPlaceholder] = useState<string>('#979797')
     const [empty,setEmpty] = useState<boolean>(false)
     const [border,setBorder] = useState<object>({})
+    const [accessToken,setAccessToken] = useState<string>()
 
     function changeColor(){
         setPlaceholder('red')
@@ -17,6 +21,15 @@ export function HomePage(props:any){
         })
         setEmpty(true)
     }
+    auth0
+    .webAuth
+    .authorize({scope: 'openid profile email'})
+    .then(credentials =>
+      // Successfully authenticated
+      // Store the accessToken
+      setAccessToken(credentials.accessToken)
+    )
+    .catch(error => console.log(error));
     return(
         <View style={styles.container}>
             <View style={styles.imageContainer}>
@@ -53,7 +66,7 @@ export function HomePage(props:any){
                 }}>
                     <Text style={styles.buttonText}>Confirmar</Text>
                 </TouchableOpacity>
-                <Text style={styles.account} onPress={()=>props.navigation.navigate('CreateAccount')}>Não tem uma conta? clique aqui para criar</Text>
+                <Text style={styles.account} onPress={()=>props.navigation.navigate('CreateAccount',{edit:false})}>Não tem uma conta? clique aqui para criar</Text>
             </View>
         </View>
     )

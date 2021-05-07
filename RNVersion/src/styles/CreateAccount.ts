@@ -14,6 +14,7 @@ export const styles = StyleSheet.create({
     },
     title:{
         fontSize: 25,
+        textAlign: 'center'
     },
     form:{
         backgroundColor: '#c4c4c4',
