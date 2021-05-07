@@ -53,7 +53,7 @@ export function HomePage(props:any){
                 }}>
                     <Text style={styles.buttonText}>Confirmar</Text>
                 </TouchableOpacity>
-                <Text style={styles.account} onPress={()=>props.navigation.navigate('CreateAccount')}>Não tem uma conta? clique aqui para criar</Text>
+                <Text style={styles.account} onPress={()=>props.navigation.navigate('CreateAccount',{edit:false})}>Não tem uma conta? clique aqui para criar</Text>
             </View>
         </View>
     )

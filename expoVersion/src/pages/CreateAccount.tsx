@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import {View,Text,Image,TextInput,TouchableOpacity} from 'react-native'
 import { PopUp } from '../components/PopUp';
 import LogoFull from '../img/logoFull.jpg';
@@ -13,19 +13,27 @@ export function CreateAccount(props:any){
     const [placeholderColor,setPlaceholderColor] = useState<string>('#979797')
     const [border,setBorder] = useState<object>({})
     const [showPopUp,setShowPopUp] = useState<boolean>(false)
+    const [title,setTitle] = useState<string>('Crie sua conta aqui!')
+    const [message,setMessage] = useState<string>('')
 
     function changeColor(){
         setPlaceholderColor('red')
-                setBorder({
-                    borderColor: 'red'
-                })
+        setBorder({
+            borderColor: 'red'
+        })
         setEmpty(true)
     }
+    useEffect(() =>{
+        if(props.route.params.edit){
+            setTitle('Preencha os dados para editar sua conta')
+        }
+    },[])
+    
     return(
         <View style={styles.container}>
             <View style={styles.imageContainer}>
                 <Image source={LogoFull} style={styles.img}/>
-                <Text style={styles.title}>Crie sua conta aqui!</Text>
+                <Text style={styles.title}>{title}</Text>
             </View>
             <View style={styles.form}>
                 {empty && (<Text style={styles.fill}>Preencha todos os campos para se cadastrar!</Text>)}
@@ -66,13 +74,18 @@ export function CreateAccount(props:any){
                         changeColor()
                         return
                     }
+                    if(props.route.params.edit){
+                        setMessage(`Usuário ${name} alterado com sucesso`)
+                    }else{
+                        setMessage(`Usuário ${name} criado com sucesso`)
+                    }
                     setShowPopUp(true)
                     
                 }}>
                     <Text style={styles.buttonText}>Cadastrar</Text>
                 </TouchableOpacity>
             </View>
-            {showPopUp && (<PopUp name={name} navigate={props.navigation.navigate}/>)}
+            {showPopUp && (<PopUp message={message} navigate={props.navigation.navigate}/>)}
         </View>
     )
 }

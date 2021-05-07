@@ -4,7 +4,7 @@ import MapView,{Marker} from 'react-native-maps'
 import {styles} from '../styles/Map'
 import {getCurrentPositionAsync,LocationObject,requestForegroundPermissionsAsync} from 'expo-location';
 
-export function Map() {
+export function Map(props: any) {
     const [location, setLocation] = useState<LocationObject>();
 
     useEffect(() => {
@@ -15,14 +15,13 @@ export function Map() {
             }
 
             let location = await getCurrentPositionAsync({});
-            console.log(location)
             setLocation(location);
         })();
     }, []);
     if(location === undefined){
         return(
             <View style={styles.center}>
-                <Text style={styles.loading}>Loading</Text>
+                <Text style={styles.loading}>Carregando</Text>
                 <ActivityIndicator size='large' color='black'/>
             </View>
         )
@@ -40,7 +39,7 @@ export function Map() {
             >
                 <Marker coordinate={{latitude: location.coords.latitude, longitude:location.coords.longitude}} title='Você está aqui!'/>
             </MapView>
-            <TouchableOpacity style={styles.button}>
+            <TouchableOpacity style={styles.button} onPress={()=>props.navigation.navigate('Profile')}>
                 <Text style={styles.buttonText}>Ver perfil</Text>
             </TouchableOpacity>
 
