@@ -3,42 +3,35 @@ import {StyleSheet,Dimensions} from 'react-native'
 const width = Dimensions.get('screen').width
 
 export const styles = StyleSheet.create({
-    container:{
+    container: {
         flex:1,
         justifyContent: 'space-around',
         alignItems: 'center',
-        backgroundColor: 'white'
+        backgroundColor: 'white',
     },
-    imageContainer:{
-        alignItems: 'center',
-        marginTop: 40
-    },
-    legend:{
-        fontSize: 20
+    img:{
+        width: '100%',
+        position: 'relative',
+        left: 10,
     },
     title:{
-        fontSize: 24,
-        marginBottom: 20,
-    },
-    image:{
-        width: width/1.5,
+        fontSize: 25,
     },
     form:{
-        width: '90%',
-        backgroundColor: '#B9D783',
-        alignItems: 'center',
+        backgroundColor: '#c4c4c4',
         borderRadius: 20,
-        marginVertical: 30,
-        paddingVertical: 20,
-        borderColor: '#8bb63c',
+        borderColor: 'black',
         borderWidth: 1,
+        width: '90%',
+        alignItems: 'center',
+        marginBottom: 30,
     },
     field:{
         width: '90%',
-        marginVertical: 10,
+        marginVertical: 15,
     },
     label:{
-        fontSize: 16,
+        fontSize: 20
     },
     input:{
         width: '100%',
@@ -54,7 +47,7 @@ export const styles = StyleSheet.create({
     button:{
         backgroundColor: '#005eab',
         height: 50,
-        width: '80%',
+        width: '90%',
         borderRadius: 20,
         justifyContent: 'center',
         alignItems: 'center',
@@ -64,18 +57,14 @@ export const styles = StyleSheet.create({
         color: 'white',
         fontSize: 20,
     },
-    account:{
-        color: 'blue',
-        fontSize: 16,
-    },
-    line:{
-        width: '95%',
-        backgroundColor: '#757575',
-        height: .5,
+    imageContainer:{
+        
+        width: '100%',
+        alignItems: 'center',
     },
     fill:{
         color: 'red',
-        fontSize: 16,
-        marginBottom: 10
+        fontSize: 15,
+        marginTop: 10,
     },
 })
