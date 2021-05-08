@@ -51,5 +51,13 @@ export const styles = StyleSheet.create({
     },
     edit:{
         backgroundColor: '#8bb63c',
+    },
+    loading:{
+        fontSize: 50,
+    },
+    center:{
+        flex:1,
+        justifyContent: 'center',
+        alignItems: 'center',
     }
 })

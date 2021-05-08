@@ -51,8 +51,7 @@ export function HomePage(props:any){
                         return
                     }
 
-                    auth0.auth.passwordRealm({username:email, password:password,realm:'Username-Password-Authentication'}).then(Credentials => {
-                        console.log(Credentials)
+                    auth0.auth.passwordRealm({username:email, password:password,realm:'Username-Password-Authentication',scope : 'read:current_user openid',audience:'https://devalex.us.auth0.com/api/v2/'}).then(Credentials => {
                         setAccessToken(Credentials.accessToken)
                     }).then(() => {
                         props.navigation.navigate('Map')

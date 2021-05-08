@@ -1,26 +1,40 @@
-import React,{useState,useContext} from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
+import React,{useState,useContext,useEffect} from 'react';
+import { Text, View, TouchableOpacity, ActivityIndicator } from 'react-native';
 import {styles} from '../styles/Profile'
-import Auth0 from 'react-native-auth0';
 import { UserContext } from '../Context/UserContext';
+import { Auth0User } from 'react-native-auth0';
 
-const auth0 = new Auth0({ domain: 'devalex.us.auth0.com', clientId: '2J2E6ovI6po2PTrJ4O3Wov9GtClXseMf' });
 
 export function Profile(props:any){
+    const [userData,setUserData] = useState<Auth0User<any>>()
     const {auth0,name,phone,email,accessToken} = useContext(UserContext)
-    auth0.auth.userInfo({token:accessToken}).then( val => {
-        auth0.users(accessToken).getUser({id: val.sub}).then( val => console.log(val)).catch( err => console.log(err))
-    })
-    fetch(`https://devalex.us.auth0.com/api/v2/userinfo`,{headers:{authorization: `Bearer ${accessToken}`}}).then(response => response.json()).then( val => console.log(val))
+    
+
+    useEffect(()=>{
+        auth0.auth.userInfo({token:accessToken}).then( val => {
+            auth0.users(accessToken).getUser({id: val.sub}).then( val => {
+                setUserData(val)
+            }).catch( err => console.log(err))
+        })
+    },[])
+
+    if( userData === undefined){
+        return(
+            <View style={styles.center}>
+                <Text style={styles.loading}>Carregando</Text>
+                <ActivityIndicator size='large' color='black'/>
+            </View>
+        )
+    }
     
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Perfil</Text>
             <View style={styles.dataContainer}>
-                <Text style={styles.subtitle}>Olá, {name}</Text>
+                <Text style={styles.subtitle}>Olá, {userData.userMetadata.name}</Text>
                 <Text style={styles.subtitle}>Veja seus dados abaixo</Text>
-                <Text style={styles.data}>E-mail: {email}</Text>
-                <Text style={styles.data}>Telefone: {phone}</Text>
+                <Text style={styles.data}>E-mail: {userData.email}</Text>
+                <Text style={styles.data}>Telefone: {userData.userMetadata.phone}</Text>
             </View>
             <View style={styles.buttons}>
                 <TouchableOpacity style={[styles.button,styles.exit]} onPress={()=>{
