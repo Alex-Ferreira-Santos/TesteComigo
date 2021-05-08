@@ -80,17 +80,17 @@ export function CreateAccount(props:any){
                     }
                     if(props.route.params.edit){
                         setMessage(`Usuário ${name} alterado com sucesso`)
+                        setShowPopUp(true)
                     }else{
                         auth0.auth.createUser({ email: email, connection: 'Username-Password-Authentication', password: password, metadata: { phone: phone, name:name } } as CreateUserParams<unknown>).then(val => {
                             console.log('usuario criado com sucesso')
                             setMessage(`Usuário ${name} criado com sucesso`)
+                            setShowPopUp(true)
                         }).catch(err => {
                             console.log('==========================')
                             console.log(JSON.stringify(err))
                         })
                     }
-                    setShowPopUp(true)
-                    
                 }}>
                     <Text style={styles.buttonText}>Cadastrar</Text>
                 </TouchableOpacity>

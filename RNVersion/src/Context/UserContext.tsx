@@ -11,6 +11,8 @@ interface UserContextProps{
     phone:string
     setPhone: (string:string)=>void
     auth0: Auth0,
+    accessToken: string,
+    setAccessToken: (string:string)=>void
 }
 
 export const UserContext = createContext({} as UserContextProps)
@@ -22,6 +24,7 @@ export function UserProvider(props:any){
     const [email,setEmail] = useState<string>('')
     const [password,setPassword] = useState<string>('')
     const [phone,setPhone] = useState<string>('')
+    const [accessToken,setAccessToken] = useState<string>('')
     return(
         <UserContext.Provider value={{
             name,
@@ -32,7 +35,9 @@ export function UserProvider(props:any){
             setName,
             setEmail,
             setPassword,
-            setPhone
+            setPhone,
+            accessToken,
+            setAccessToken
         }}>
             {props.children}
         </UserContext.Provider>

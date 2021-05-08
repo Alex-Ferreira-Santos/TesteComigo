@@ -5,11 +5,10 @@ import Logo from '../img/logo.png'
 import { UserContext } from '../Context/UserContext';
 
 export function HomePage(props:any){
-    const [accessToken,setAccessToken] = useState<any>()
     const [placeholder,setPlaceholder] = useState<string>('#979797')
     const [empty,setEmpty] = useState<boolean>(false)
     const [border,setBorder] = useState<object>({})
-    const {auth0,email,password,setEmail,setPassword} = useContext(UserContext)
+    const {auth0,email,password,setEmail,setPassword,setAccessToken} = useContext(UserContext)
 
     function changeColor(){
         setPlaceholder('red')
@@ -56,17 +55,8 @@ export function HomePage(props:any){
                         console.log(Credentials)
                         setAccessToken(Credentials.accessToken)
                     }).then(() => {
-                        auth0.auth.userInfo({token: accessToken}).then(data => console.log(data))
                         props.navigation.navigate('Map')
                     })
-                    /*auth0.webAuth.authorize({scope: 'openid profile email'}).then(credentials =>{
-                        // Successfully authenticated
-                        // Store the accessToken
-                        console.log(credentials)
-                        setAccessToken(credentials.accessToken)
-                    }).then(()=> {
-                        
-                    })*/
                     .catch(error => console.log(error));
                 }}>
                     <Text style={styles.buttonText}>Login</Text>

@@ -13,13 +13,15 @@ export const styles = StyleSheet.create({
     },
     box:{
         backgroundColor: 'white',
-        width: '60%',
+        width: '70%',
         borderRadius: 20,
         alignItems: 'center',
         justifyContent: 'center',
+        padding: 20,
     },
     message:{
-        fontSize: 25
+        fontSize: 25,
+        textAlign: 'center',
     },
     button:{
         backgroundColor: '#8bb63c',
