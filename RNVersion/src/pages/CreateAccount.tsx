@@ -1,20 +1,24 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect,useContext} from 'react';
 import {View,Text,Image,TextInput,TouchableOpacity} from 'react-native'
 import { PopUp } from '../components/PopUp';
 import LogoFull from '../img/logoFull.jpg';
 import {styles} from '../styles/CreateAccount'
+import {UserContext} from '../Context/UserContext'
+
+import {CreateUserParams} from 'react-native-auth0';
 
 export function CreateAccount(props:any){
-    const [name,setName] = useState<string>('')
-    const [phone,setPhone] = useState<string>('')
-    const [email,setEmail] = useState<string>('')
-    const [password,setPassword] = useState<string>('')
     const [empty,setEmpty] = useState<boolean>(false)
     const [placeholderColor,setPlaceholderColor] = useState<string>('#979797')
     const [border,setBorder] = useState<object>({})
     const [showPopUp,setShowPopUp] = useState<boolean>(false)
     const [title,setTitle] = useState<string>('Crie sua conta aqui!')
     const [message,setMessage] = useState<string>('')
+    const [name,setName] = useState<string>('')
+    const [password,setPassword] = useState<string>('')
+    const [phone,setPhone] = useState<string>('')
+    const [email,setEmail] = useState<string>('')
+    const {auth0} = useContext(UserContext)
 
     function changeColor(){
         setPlaceholderColor('red')
@@ -77,7 +81,13 @@ export function CreateAccount(props:any){
                     if(props.route.params.edit){
                         setMessage(`Usuário ${name} alterado com sucesso`)
                     }else{
-                        setMessage(`Usuário ${name} criado com sucesso`)
+                        auth0.auth.createUser({ email: email, connection: 'Username-Password-Authentication', password: password, metadata: { phone: phone, name:name } } as CreateUserParams<unknown>).then(val => {
+                            console.log('usuario criado com sucesso')
+                            setMessage(`Usuário ${name} criado com sucesso`)
+                        }).catch(err => {
+                            console.log('==========================')
+                            console.log(JSON.stringify(err))
+                        })
                     }
                     setShowPopUp(true)
                     
