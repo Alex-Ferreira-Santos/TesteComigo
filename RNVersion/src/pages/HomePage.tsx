@@ -8,7 +8,9 @@ export function HomePage(props:any){
     const [placeholder,setPlaceholder] = useState<string>('#979797')
     const [empty,setEmpty] = useState<boolean>(false)
     const [border,setBorder] = useState<object>({})
-    const {auth0,email,password,setEmail,setPassword,setAccessToken} = useContext(UserContext)
+    const [email,setEmail] = useState<string>('')
+    const [password,setPassword] = useState<string>('')
+    const {auth0,setAccessToken} = useContext(UserContext)
 
     function changeColor(){
         setPlaceholder('red')

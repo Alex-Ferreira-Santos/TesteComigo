@@ -7,7 +7,7 @@ import { Auth0User } from 'react-native-auth0';
 
 export function Profile(props:any){
     const [userData,setUserData] = useState<Auth0User<any>>()
-    const {auth0,name,phone,email,accessToken} = useContext(UserContext)
+    const {auth0,accessToken} = useContext(UserContext)
     
 
     useEffect(()=>{

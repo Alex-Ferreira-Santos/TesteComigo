@@ -18,7 +18,7 @@ export function CreateAccount(props:any){
     const [password,setPassword] = useState<string>('')
     const [phone,setPhone] = useState<string>('')
     const [email,setEmail] = useState<string>('')
-    const {auth0} = useContext(UserContext)
+    const {auth0,accessToken} = useContext(UserContext)
 
     function changeColor(){
         setPlaceholderColor('red')
@@ -80,9 +80,13 @@ export function CreateAccount(props:any){
                     }
                     if(props.route.params.edit){
                         setMessage(`Usuário ${name} alterado com sucesso`)
+                        auth0.auth.userInfo({token: accessToken}).then(val=>{
+                            auth0.users(accessToken).patchUser({id: val.sub,metadata:{phone:phone,name:name}})
+                        })
+                        auth0.users(accessToken)
                         setShowPopUp(true)
                     }else{
-                        auth0.auth.createUser({ email: email, connection: 'Username-Password-Authentication', password: password, metadata: { phone: phone, name:name } } as CreateUserParams<unknown>).then(val => {
+                        auth0.auth.createUser({ email: email, connection: 'Username-Password-Authentication', password: password, metadata: { phone: phone, name:name} } as CreateUserParams<unknown>).then(val => {
                             console.log('usuario criado com sucesso')
                             setMessage(`Usuário ${name} criado com sucesso`)
                             setShowPopUp(true)
