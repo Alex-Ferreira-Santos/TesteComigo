@@ -70,6 +70,8 @@ export function HomePage(props:any){
                         setAccessToken(Credentials.accessToken)
                     }).then(() => {
                         props.navigation.navigate('Map')
+                        setEmail('')
+                        setPassword('')
                     })
                     .catch((err) => {
                         console.error(err)

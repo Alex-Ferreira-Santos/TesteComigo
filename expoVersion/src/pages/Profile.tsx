@@ -7,7 +7,7 @@ import { Auth0User } from 'react-native-auth0';
 
 export function Profile(props:any){
     const [userData,setUserData] = useState<Auth0User<any>>()
-    const {auth0,accessToken} = useContext(UserContext)
+    const {auth0,accessToken,setAccessToken} = useContext(UserContext)
     
 
     useEffect(()=>{
@@ -38,14 +38,10 @@ export function Profile(props:any){
             </View>
             <View style={styles.buttons}>
                 <TouchableOpacity style={[styles.button,styles.exit]} onPress={()=>{
-                    auth0.webAuth
-                    .clearSession()
-                    .then(() => {
+                    fetch(auth0.auth.logoutUrl({federated: false})).then(data=>{
+                        setAccessToken('')
                         props.navigation.navigate('HomePage')
-                    })
-                    .catch(error => {
-                        console.log('Log out cancelled');
-                    });
+                    }).catch(err => console.log(err))
                 }}>
                     <Text style={styles.buttonText}>Sair da Conta</Text>
                 </TouchableOpacity>

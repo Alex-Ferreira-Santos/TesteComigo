@@ -75,10 +75,18 @@ export function CreateAccount(props:any){
                     }}/>
                 </View></>)}
                 <TouchableOpacity style={styles.button} onPress={ async ()=>{
-                    if([name,phone,email,password].includes('')){
-                        changeColor()
-                        return
+                    if(props.route.params.edit){
+                        if([name,phone].includes('')){
+                            changeColor()
+                            return
+                        }
+                    }else{
+                        if([name,phone,email,password].includes('')){
+                            changeColor()
+                            return
+                        }
                     }
+                    
                     if(props.route.params.edit){
                         setMessage(`Usuário ${name} alterado com sucesso`)
                         await auth0.auth.userInfo({token: accessToken}).then(async val=>{
