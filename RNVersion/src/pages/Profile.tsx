@@ -16,7 +16,7 @@ export function Profile(props:any){
                 setUserData(val)
             }).catch( err => console.log(err))
         })
-    },[])
+    },[props.route.params])
 
     if( userData === undefined){
         return(

@@ -10,6 +10,7 @@ export function HomePage(props:any){
     const [border,setBorder] = useState<object>({})
     const [email,setEmail] = useState<string>('')
     const [password,setPassword] = useState<string>('')
+    const [message,setMessage] = useState<string>('Preencha todos os dados para continuar!')
     const {auth0,setAccessToken} = useContext(UserContext)
 
     function changeColor(){
@@ -28,7 +29,7 @@ export function HomePage(props:any){
             </View>
             <View style={styles.form}>
                 <Text style={styles.title}>Faça Login para continuar!</Text>
-                {empty && (<Text style={styles.fill}>Preencha todos os dados para continuar!</Text>)}
+                {empty && (<Text style={styles.fill}>{message}</Text>)}
                 <View style={styles.line}/>
                 <View style={styles.field}>
                     <Text style={styles.label}>E-mail</Text>
@@ -47,18 +48,28 @@ export function HomePage(props:any){
                     }}/>
                 </View>
                 <View style={styles.line}/>
-                <TouchableOpacity style={styles.button} onPress={()=>{
+                <TouchableOpacity style={styles.button} onPress={async ()=>{
                     if([email,password].includes('')){
                         changeColor()
                         return
                     }
 
-                    auth0.auth.passwordRealm({username:email, password:password,realm:'Username-Password-Authentication',scope : 'read:current_user openid',audience:'https://devalex.us.auth0.com/api/v2/'}).then(Credentials => {
+                    await auth0.auth.passwordRealm({
+                        username:email, 
+                        password:password,
+                        realm:'Username-Password-Authentication',
+                        scope : 'read:current_user update:current_user_metadata openid',
+                        audience:'https://devalex.us.auth0.com/api/v2/',
+                    }).then(Credentials => {
                         setAccessToken(Credentials.accessToken)
                     }).then(() => {
                         props.navigation.navigate('Map')
                     })
-                    .catch(error => console.log(error));
+                    .catch((err) => {
+                        console.error(err)
+                        setMessage('E-mail ou senha incorretos!!!')
+                        setEmpty(true)
+                    });
                 }}>
                     <Text style={styles.buttonText}>Login</Text>
                 </TouchableOpacity>

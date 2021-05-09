@@ -3,8 +3,9 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import {styles} from '../styles/PopUp'
 
 interface PopUpProps{
-    navigate: (string:string) => void
-    message: string
+    navigate: (string:string,object:object) => void
+    message: string,
+    page: string
 }
 
 export function PopUp(props:PopUpProps){
@@ -12,7 +13,7 @@ export function PopUp(props:PopUpProps){
         <View style={styles.container}>
             <View style={styles.box}>
                 <Text style={styles.message}>{props.message}</Text>
-                <TouchableOpacity onPress={()=>props.navigate('HomePage')} style={styles.button}>
+                <TouchableOpacity onPress={()=>props.navigate(props.page,{reload:true})} style={styles.button}>
                     <Text style={styles.buttonText}>Confirmar</Text>
                 </TouchableOpacity>
             </View>

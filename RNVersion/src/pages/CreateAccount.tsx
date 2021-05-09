@@ -18,6 +18,7 @@ export function CreateAccount(props:any){
     const [password,setPassword] = useState<string>('')
     const [phone,setPhone] = useState<string>('')
     const [email,setEmail] = useState<string>('')
+    const [path,setPath] = useState<string>('')
     const {auth0,accessToken} = useContext(UserContext)
 
     function changeColor(){
@@ -73,20 +74,21 @@ export function CreateAccount(props:any){
                         setPassword(value.trim())
                     }}/>
                 </View>
-                <TouchableOpacity style={styles.button} onPress={()=>{
+                <TouchableOpacity style={styles.button} onPress={ async ()=>{
                     if([name,phone,email,password].includes('')){
                         changeColor()
                         return
                     }
                     if(props.route.params.edit){
                         setMessage(`Usuário ${name} alterado com sucesso`)
-                        auth0.auth.userInfo({token: accessToken}).then(val=>{
-                            auth0.users(accessToken).patchUser({id: val.sub,metadata:{phone:phone,name:name}})
+                        await auth0.auth.userInfo({token: accessToken}).then(async val=>{
+                            await auth0.users(accessToken).patchUser({id: val.sub,metadata:{phone:phone,name:name}}).then( val => {
+                                setPath('Profile')
+                                setShowPopUp(true)
+                            }).catch(err => console.log(err))
                         })
-                        auth0.users(accessToken)
-                        setShowPopUp(true)
                     }else{
-                        auth0.auth.createUser({ email: email, connection: 'Username-Password-Authentication', password: password, metadata: { phone: phone, name:name} } as CreateUserParams<unknown>).then(val => {
+                        await auth0.auth.createUser({ email: email, connection: 'Username-Password-Authentication', password: password, metadata: { phone: phone, name:name} } as CreateUserParams<unknown>).then(val => {
                             console.log('usuario criado com sucesso')
                             setMessage(`Usuário ${name} criado com sucesso`)
                             setShowPopUp(true)
@@ -96,10 +98,10 @@ export function CreateAccount(props:any){
                         })
                     }
                 }}>
-                    <Text style={styles.buttonText}>Cadastrar</Text>
+                    <Text style={styles.buttonText}>{props.route.params.edit ? 'Atualizar dados' : 'Cadastrar'}</Text>
                 </TouchableOpacity>
             </View>
-            {showPopUp && (<PopUp message={message} navigate={props.navigation.navigate}/>)}
+            {showPopUp && (<PopUp message={message} navigate={props.navigation.navigate} page={path}/>)}
         </View>
     )
 }
