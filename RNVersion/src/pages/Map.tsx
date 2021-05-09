@@ -15,25 +15,21 @@ export function Map(props: any) {
 
     async function verifyLocationPermission() {
       try {
-        // Tenta adquirir o acesso GPS do Android
         const granted = await PermissionsAndroid.request(
           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
         );
-        // Se permitido, exibe no console que a permissão foi concedida ou não
         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
           setHasLocationPermission(true);
         } else {
           setHasLocationPermission(false);
         }
       } catch (err) {
-        // Caso não haja sucesso ao tentar verificar o acesso, retorna o erro no console
         console.warn(err);
       }
     }
 
     useEffect(() => {
         verifyLocationPermission();
-        // Se tivermos a localização, pegamos a latitude e a longitude
         if (hasLocationPermission) {
           Geolocation.getCurrentPosition( position => {
               setUserPosition({latitude: position.coords.latitude, longitude: position.coords.longitude,});
