@@ -13,13 +13,15 @@ export const styles = StyleSheet.create({
     },
     box:{
         backgroundColor: 'white',
-        width: '60%',
+        width: '70%',
         borderRadius: 20,
         alignItems: 'center',
         justifyContent: 'center',
+        padding: 20,
     },
     message:{
-        fontSize: 25
+        fontSize: 25,
+        textAlign: 'center',
     },
     button:{
         backgroundColor: '#8bb63c',
@@ -33,5 +35,36 @@ export const styles = StyleSheet.create({
     buttonText:{
         color: 'white',
         fontSize: 20,
+    },
+    field:{
+        width:'100%',
+    },
+    label:{
+        fontSize: 18
+    },
+    input:{
+        width: '100%',
+        backgroundColor: '#F0F0F0',
+        borderRadius: 10,
+        borderColor: 'gray',
+        borderWidth: 1,
+        paddingVertical: 0,
+        height: 40,
+        color: 'black',
+        paddingLeft: 10,
+    },
+    line:{
+        width: '95%',
+        marginVertical: 20,
+        backgroundColor: '#757575',
+        height: .5,
+    },
+    backButton:{
+        backgroundColor: '#797979',
+        height: 50,
+        width: '90%',
+        borderRadius: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
 })

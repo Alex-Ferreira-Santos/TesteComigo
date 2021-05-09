@@ -22,6 +22,7 @@ export const styles = StyleSheet.create({
     },
     image:{
         marginLeft: 20,
+        width: width
     },
     form:{
         width: '90%',
@@ -80,6 +81,7 @@ export const styles = StyleSheet.create({
     },
     forgetAccount:{
         color: 'blue',
-        fontSize: 20
+        fontSize: 20, 
+        marginBottom: 10
     }
 })

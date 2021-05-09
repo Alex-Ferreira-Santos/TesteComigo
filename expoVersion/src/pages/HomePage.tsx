@@ -1,14 +1,19 @@
-import React,{useState} from 'react';
+import React,{useState,useContext} from 'react';
 import {View,Text,Image,TextInput,TouchableOpacity} from 'react-native'
 import {styles} from '../styles/HomePage'
-import Logo from '../img/logo.png'
+import LogoFull from '../img/logoFull.jpg';
+import { UserContext } from '../Context/UserContext';
+import {PopUp} from '../components/PopUp'
 
 export function HomePage(props:any){
-    const [Email,setEmail] = useState<string>('')
-    const [password,setPassword] = useState<string>('')
     const [placeholder,setPlaceholder] = useState<string>('#979797')
     const [empty,setEmpty] = useState<boolean>(false)
     const [border,setBorder] = useState<object>({})
+    const [email,setEmail] = useState<string>('')
+    const [password,setPassword] = useState<string>('')
+    const [message,setMessage] = useState<string>('Preencha todos os dados para continuar!')
+    const [showPopUp, setShowPopUp] = useState<boolean>(false)
+    const {auth0,setAccessToken} = useContext(UserContext)
 
     function changeColor(){
         setPlaceholder('red')
@@ -17,15 +22,20 @@ export function HomePage(props:any){
         })
         setEmpty(true)
     }
+
+    function hidePopUp(){
+        setShowPopUp(false)
+    }
+    
     return(
         <View style={styles.container}>
             <View style={styles.imageContainer}>
-                <Image source={Logo} style={styles.image}/>
+                <Image source={LogoFull} style={styles.image}/>
                 <Text style={styles.legend}>Veja sua posição atual no mapa!</Text>
             </View>
             <View style={styles.form}>
                 <Text style={styles.title}>Faça Login para continuar!</Text>
-                {empty && (<Text style={styles.fill}>Preencha todos os dados para continuar!</Text>)}
+                {empty && (<Text style={styles.fill}>{message}</Text>)}
                 <View style={styles.line}/>
                 <View style={styles.field}>
                     <Text style={styles.label}>E-mail</Text>
@@ -44,17 +54,37 @@ export function HomePage(props:any){
                     }}/>
                 </View>
                 <View style={styles.line}/>
-                <TouchableOpacity style={styles.button} onPress={()=>{
-                    if([Email,password].includes('')){
+                <TouchableOpacity style={styles.button} onPress={async ()=>{
+                    if([email,password].includes('')){
                         changeColor()
                         return
                     }
-                    props.navigation.navigate('Map')
+
+                    await auth0.auth.passwordRealm({
+                        username:email, 
+                        password:password,
+                        realm:'Username-Password-Authentication',
+                        scope : 'read:current_user update:current_user_metadata openid',
+                        audience:'https://devalex.us.auth0.com/api/v2/',
+                    }).then(Credentials => {
+                        setAccessToken(Credentials.accessToken)
+                    }).then(() => {
+                        props.navigation.navigate('Map')
+                    })
+                    .catch((err) => {
+                        console.error(err)
+                        setMessage('E-mail ou senha incorretos!!!')
+                        setEmpty(true)
+                    });
                 }}>
-                    <Text style={styles.buttonText}>Confirmar</Text>
+                    <Text style={styles.buttonText}>Login</Text>
                 </TouchableOpacity>
+                <Text style={styles.forgetAccount} onPress={()=>{
+                    setShowPopUp(true)
+                }}>Esqueci a senha?</Text>
                 <Text style={styles.account} onPress={()=>props.navigation.navigate('CreateAccount',{edit:false})}>Não tem uma conta? clique aqui para criar</Text>
             </View>
+            {showPopUp && (<PopUp message='Digite seu e-mail para mudar sua senha!' navigate={props.navigation.navigate} change={true} page='' funcao={hidePopUp}/>)}
         </View>
     )
 }

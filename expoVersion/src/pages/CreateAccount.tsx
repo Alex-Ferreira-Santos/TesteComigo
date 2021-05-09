@@ -1,20 +1,25 @@
-import React,{useState,useEffect} from 'react';
+import React,{useState,useEffect,useContext} from 'react';
 import {View,Text,Image,TextInput,TouchableOpacity} from 'react-native'
 import { PopUp } from '../components/PopUp';
-import LogoFull from '../img/logoFull.jpg';
+import Logo from '../img/logo.png'
 import {styles} from '../styles/CreateAccount'
+import {UserContext} from '../Context/UserContext'
+
+import {CreateUserParams} from 'react-native-auth0';
 
 export function CreateAccount(props:any){
-    const [name,setName] = useState<string>('')
-    const [phone,setPhone] = useState<string>('')
-    const [email,setEmail] = useState<string>('')
-    const [password,setPassword] = useState<string>('')
     const [empty,setEmpty] = useState<boolean>(false)
     const [placeholderColor,setPlaceholderColor] = useState<string>('#979797')
     const [border,setBorder] = useState<object>({})
     const [showPopUp,setShowPopUp] = useState<boolean>(false)
     const [title,setTitle] = useState<string>('Crie sua conta aqui!')
     const [message,setMessage] = useState<string>('')
+    const [name,setName] = useState<string>('')
+    const [password,setPassword] = useState<string>('')
+    const [phone,setPhone] = useState<string>('')
+    const [email,setEmail] = useState<string>('')
+    const [path,setPath] = useState<string>('')
+    const {auth0,accessToken} = useContext(UserContext)
 
     function changeColor(){
         setPlaceholderColor('red')
@@ -32,7 +37,7 @@ export function CreateAccount(props:any){
     return(
         <View style={styles.container}>
             <View style={styles.imageContainer}>
-                <Image source={LogoFull} style={styles.img}/>
+                <Image source={Logo} style={styles.img}/>
                 <Text style={styles.title}>{title}</Text>
             </View>
             <View style={styles.form}>
@@ -53,7 +58,7 @@ export function CreateAccount(props:any){
                         setPhone(value.trim())
                     }}/>
                 </View>
-                <View style={styles.field}>
+                {!props.route.params.edit && (<><View style={styles.field}>
                     <Text style={styles.label}>E-mail</Text>
                     <TextInput style={[styles.input, email === '' ? border: {}]} placeholder="Digite o seu E-mail aqui" placeholderTextColor={placeholderColor} onChangeText={value => {
                         setPlaceholderColor('#979797')
@@ -68,24 +73,35 @@ export function CreateAccount(props:any){
                         setBorder({})
                         setPassword(value.trim())
                     }}/>
-                </View>
-                <TouchableOpacity style={styles.button} onPress={()=>{
+                </View></>)}
+                <TouchableOpacity style={styles.button} onPress={ async ()=>{
                     if([name,phone,email,password].includes('')){
                         changeColor()
                         return
                     }
                     if(props.route.params.edit){
                         setMessage(`Usuário ${name} alterado com sucesso`)
+                        await auth0.auth.userInfo({token: accessToken}).then(async val=>{
+                            await auth0.users(accessToken).patchUser({id: val.sub,metadata:{phone:phone,name:name}}).then( val => {
+                                setPath('Profile')
+                                setShowPopUp(true)
+                            }).catch(err => console.log(err))
+                        })
                     }else{
-                        setMessage(`Usuário ${name} criado com sucesso`)
+                        await auth0.auth.createUser({ email: email, connection: 'Username-Password-Authentication', password: password, metadata: { phone: phone, name:name} } as CreateUserParams<unknown>).then(val => {
+                            console.log('usuario criado com sucesso')
+                            setMessage(`Usuário ${name} criado com sucesso`)
+                            setShowPopUp(true)
+                        }).catch(err => {
+                            console.log('==========================')
+                            console.log(JSON.stringify(err))
+                        })
                     }
-                    setShowPopUp(true)
-                    
                 }}>
-                    <Text style={styles.buttonText}>Cadastrar</Text>
+                    <Text style={styles.buttonText}>{props.route.params.edit ? 'Atualizar dados' : 'Cadastrar'}</Text>
                 </TouchableOpacity>
             </View>
-            {showPopUp && (<PopUp message={message} navigate={props.navigation.navigate}/>)}
+            {showPopUp && (<PopUp message={message} navigate={props.navigation.navigate} change={false} page={path}/>)}
         </View>
     )
 }
