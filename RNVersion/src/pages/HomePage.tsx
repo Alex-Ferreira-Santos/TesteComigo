@@ -1,8 +1,9 @@
 import React,{useState,useContext} from 'react';
 import {View,Text,Image,TextInput,TouchableOpacity} from 'react-native'
 import {styles} from '../styles/HomePage'
-import Logo from '../img/logo.png'
+import LogoFull from '../img/logoFull.jpg';
 import { UserContext } from '../Context/UserContext';
+import {PopUp} from '../components/PopUp'
 
 export function HomePage(props:any){
     const [placeholder,setPlaceholder] = useState<string>('#979797')
@@ -11,6 +12,7 @@ export function HomePage(props:any){
     const [email,setEmail] = useState<string>('')
     const [password,setPassword] = useState<string>('')
     const [message,setMessage] = useState<string>('Preencha todos os dados para continuar!')
+    const [showPopUp, setShowPopUp] = useState<boolean>(false)
     const {auth0,setAccessToken} = useContext(UserContext)
 
     function changeColor(){
@@ -20,11 +22,15 @@ export function HomePage(props:any){
         })
         setEmpty(true)
     }
+
+    function hidePopUp(){
+        setShowPopUp(false)
+    }
     
     return(
         <View style={styles.container}>
             <View style={styles.imageContainer}>
-                <Image source={Logo} style={styles.image}/>
+                <Image source={LogoFull} style={styles.image}/>
                 <Text style={styles.legend}>Veja sua posição atual no mapa!</Text>
             </View>
             <View style={styles.form}>
@@ -73,8 +79,12 @@ export function HomePage(props:any){
                 }}>
                     <Text style={styles.buttonText}>Login</Text>
                 </TouchableOpacity>
+                <Text style={styles.forgetAccount} onPress={()=>{
+                    setShowPopUp(true)
+                }}>Esqueci a senha?</Text>
                 <Text style={styles.account} onPress={()=>props.navigation.navigate('CreateAccount',{edit:false})}>Não tem uma conta? clique aqui para criar</Text>
             </View>
+            {showPopUp && (<PopUp message='Digite seu e-mail para mudar sua senha!' navigate={props.navigation.navigate} change={true} page='' funcao={hidePopUp}/>)}
         </View>
     )
 }

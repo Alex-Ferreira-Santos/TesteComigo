@@ -1,4 +1,6 @@
-import {StyleSheet} from 'react-native'
+import {StyleSheet,Dimensions} from 'react-native'
+
+const width = Dimensions.get('screen').width
 
 export const styles = StyleSheet.create({
     container: {
@@ -8,9 +10,8 @@ export const styles = StyleSheet.create({
         backgroundColor: 'white',
     },
     img:{
-        width: '100%',
-        position: 'relative',
-        left: 10,
+        width: width/2,
+        height: width/2,
     },
     title:{
         fontSize: 25,
